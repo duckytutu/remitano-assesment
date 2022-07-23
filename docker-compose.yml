@@ -3,26 +3,24 @@ version: "3"
 services:
   client:
     container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    image: node:16.15.1
     volumes:
       - ./client:/app
     env_file:
       - ./client/.env
+    ports:
+      - "8000:8000"
+    command: sh -c "cd /app && yarn && yarn start"
   server:
     container_name: server
+    image: node:16.15.1
     depends_on:
       - db
-    build:
-      context: ./server
-      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./server:/app
+    command: sh -c "cd /app && yarn && yarn start:dev"
   db:
     container_name: db
     image: mariadb:10.5.8
