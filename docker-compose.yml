@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   client:
     container_name: client
@@ -13,6 +14,8 @@ services:
       - ./client/.env
   server:
     container_name: server
+    depends_on:
+      - db
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -20,3 +23,13 @@ services:
       - "3000:3000"
     volumes:
       - ./server:/app
+  db:
+    container_name: db
+    image: mariadb:10.5.8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: remitano
+    volumes:
+      - ./database/data:/var/lib/mysql
