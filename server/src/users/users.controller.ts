@@ -27,19 +27,20 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return true;
-    // return this.usersService.findOne();
+    return this.usersService.findOne({ where: { id } });
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return true;
-    // return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(
+      updateUserDto,
+      { where: { id } },
+      { where: { id } },
+    );
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return true;
-    // return this.usersService.remove(+id);
+    return this.usersService.delete({ where: { id } });
   }
 }
