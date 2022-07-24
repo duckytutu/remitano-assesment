@@ -23,6 +23,8 @@ module.exports = {
         allowNull: false,
         defaultValue: true,
       },
+      createdAt: { type: 'timestamp' },
+      updatedAt: { type: 'timestamp' },
     });
   },
 

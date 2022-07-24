@@ -2,10 +2,10 @@ import { Column, Model, Table } from 'sequelize-typescript';
 
 @Table
 export class User extends Model<User> {
-  @Column({ primaryKey: true })
+  @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column
+  @Column({ unique: true })
   username: string;
 
   @Column
@@ -13,4 +13,10 @@ export class User extends Model<User> {
 
   @Column({ defaultValue: true })
   isActive: boolean;
+
+  @Column({ type: 'timestamp' })
+  createdAt?: any;
+
+  @Column({ type: 'timestamp' })
+  updatedAt?: any;
 }

@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { USERS_REPOSITORY } from 'src/constants/repositories';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './models/user.model';
+import { CrudService } from 'nestjs-crud-sequelize';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
-export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+export class UsersService extends CrudService<User> {
+  constructor(
+    // @Inject(USERS_REPOSITORY)
+    // private userRepository: typeof User,
+
+    @InjectModel(User)
+    model: typeof User,
+  ) {
+    super(model);
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  // async create(user: any): Promise<User> {
+  //   return await this.userRepository.create<User>(user);
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // findAll() {
+  //   return this.userRepository.findAll<User>();
+  // }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // findOne(id: number) {
+  //   return this.userRepository.findByPk(id);
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }
