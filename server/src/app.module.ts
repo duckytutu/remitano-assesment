@@ -1,20 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { UsersModule } from './users/users.module';
+import { User } from './users/models/user.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mariadb',
+    SequelizeModule.forRoot({
+      dialect: 'mysql',
       host: 'db',
       port: 3306,
       username: 'root',
       password: 'root',
       database: 'remitano',
-      entities: [],
+      models: [User],
       synchronize: true,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
