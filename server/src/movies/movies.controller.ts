@@ -12,7 +12,7 @@ export class MoviesController {
   }
 
   @Get()
-  async findAll(@Param('userId') userId: number) {
+  async findAll() {
     const data = await this.moviesService.findAll();
     //raw query from db: SELECT m.id, m.movieTitle, m.movieDescription, m.movieUrl, m.createdAt, u.username FROM Movies m left join Users u on m.userId = u.id order by m.createdAt desc
     return data;

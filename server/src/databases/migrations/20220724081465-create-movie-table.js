@@ -16,7 +16,10 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
-      userId: { type: Sequelize.INTEGER, allowNull: false, foreignKey: true },
+      userId: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Users', key: 'id' },
+      },
       movieUrl: { type: Sequelize.STRING, allowNull: false },
       movieDescription: {
         type: Sequelize.STRING,
