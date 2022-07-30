@@ -16,6 +16,7 @@ export class MoviesController {
   async findAll() {
     const data = await this.moviesService.findAll({
       include: { model: User, attributes: ['username'] },
+      order: [['createdAt', 'DESC']],
     });
     return data;
   }

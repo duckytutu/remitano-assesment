@@ -7,11 +7,13 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useCallback } from "react";
+import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Field, FormField } from "./typings";
 import { parseVideoIdFromYoutubeLink } from "./helper";
-import { getVideoDetail } from "../../api/videos";
+import { getMovieDetail, shareMovie } from "../../api/movies";
+import { AuthState, useAuth } from "../../context/AuthContext";
 
 const Wrapper = styled(Box)(() => ({
   display: "flex",
@@ -24,13 +26,24 @@ const Wrapper = styled(Box)(() => ({
   borderRadius: "10px",
 }));
 
-export default function ShareVideo() {
+export default function Share() {
+  const { user } = useAuth() as AuthState;
+
   const onSubmit = async (values: FormField) => {
-    const videoId = parseVideoIdFromYoutubeLink(values[Field.LINK]);
-    if (videoId) {
-      const video = await getVideoDetail(videoId);
-      console.log(video);
-    }
+    const movieId = parseVideoIdFromYoutubeLink(values[Field.LINK]);
+    if (movieId) {
+      const movie = await getMovieDetail(movieId);
+      if (movie && user) {
+        const { data } = await shareMovie({
+          userId: user.id,
+          movieUrl: `https://www.youtube.com/embed/${movie.movieId}`,
+          movieTitle: movie.title,
+          movieDescription: movie.description.substring(0, 100),
+        });
+        if (data) toast("Shared movie successfully", { type: "success" });
+        else toast("Shared movie failed", { type: "error" });
+      } else toast("Not found movie", { type: "error" });
+    } else toast("The link is invalid", { type: "error" });
   };
 
   const formik = useFormik<FormField>({

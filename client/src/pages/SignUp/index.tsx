@@ -7,11 +7,10 @@ import {
   Typography,
   TextField,
   Button,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 import { Field, FormField } from "./typings";
 import { registerUser } from "../../api/users";
 
@@ -34,9 +33,6 @@ const signupSchema = Yup.object().shape({
 
 export default function SignUp() {
   const navigate = useNavigate();
-
-  const [success, setSuccess] = useState(false);
-  const [openSnackbar, setOpenSnacknbar] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (values: FormField) => {
@@ -47,13 +43,12 @@ export default function SignUp() {
         password: values[Field.PASSWORD],
       });
       if (data) {
-        setSuccess(true);
+        toast("Register successfully", { type: "success" });
       }
     } catch (error) {
-      setSuccess(false);
+      toast("Register failed", { type: "error" });
     } finally {
       setIsSubmitting(false);
-      setOpenSnacknbar(true);
     }
   };
 
@@ -148,20 +143,6 @@ export default function SignUp() {
           </Button>
         </Box>
       </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={2000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        onClose={() => setOpenSnacknbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnacknbar(false)}
-          severity={success ? "success" : "error"}
-          sx={{ width: "100%" }}
-        >
-          {success ? "Sign up successfully" : "Sign up failed"}
-        </Alert>
-      </Snackbar>
     </Container>
   );
 }

@@ -1,11 +1,11 @@
 import { styled } from "@mui/material";
 
-export const VideoWrapper = styled("div")(() => ({
+export const MovieWrapper = styled("div")(() => ({
   paddingTop: "56.25%",
   position: "relative",
 }));
 
-export const VideoIframe = styled("iframe")(() => ({
+export const MovieIframe = styled("iframe")(() => ({
   position: "absolute",
   top: 0,
   left: 0,
