@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CreateMovieDto } from 'src/movies/dto/create-movie.dto';
+import { User } from '../users/models/user.model';
 import { MoviesService } from './movies.service';
 
 @Controller('movies')
@@ -13,8 +14,9 @@ export class MoviesController {
 
   @Get()
   async findAll() {
-    const data = await this.moviesService.findAll();
-    //raw query from db: SELECT m.id, m.movieTitle, m.movieDescription, m.movieUrl, m.createdAt, u.username FROM Movies m left join Users u on m.userId = u.id order by m.createdAt desc
+    const data = await this.moviesService.findAll({
+      include: { model: User, attributes: ['username'] },
+    });
     return data;
   }
 
