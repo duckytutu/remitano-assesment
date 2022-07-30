@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CrudService } from 'nestjs-crud-sequelize';
-import { User } from './models/user.model';
+import { Movie } from './models/movie.model';
 
 @Injectable()
-export class UsersService extends CrudService<User> {
+export class MoviesService extends CrudService<Movie> {
   constructor(
-    @InjectModel(User)
-    model: typeof User,
+    @InjectModel(Movie)
+    model: typeof Movie,
   ) {
     super(model);
   }
