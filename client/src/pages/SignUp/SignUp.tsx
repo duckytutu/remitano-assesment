@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -7,10 +7,13 @@ import {
   Typography,
   TextField,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Field, FormField } from "./typings";
+import { registerUser } from "../../api/users";
 
 const signupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -32,6 +35,28 @@ const signupSchema = Yup.object().shape({
 export default function SignUp() {
   const navigate = useNavigate();
 
+  const [success, setSuccess] = useState(false);
+  const [openSnackbar, setOpenSnacknbar] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (values: FormField) => {
+    try {
+      setIsSubmitting(true);
+      const { data } = await registerUser({
+        username: values[Field.EMAIL],
+        password: values[Field.PASSWORD],
+      });
+      if (data) {
+        setSuccess(true);
+      }
+    } catch (error) {
+      setSuccess(false);
+    } finally {
+      setIsSubmitting(false);
+      setOpenSnacknbar(true);
+    }
+  };
+
   const formik = useFormik<FormField>({
     initialValues: {
       [Field.EMAIL]: "",
@@ -39,9 +64,7 @@ export default function SignUp() {
       [Field.CONFIRM_PASSWORD]: "",
     },
     validationSchema: signupSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit,
   });
 
   const getError = useCallback(
@@ -110,6 +133,7 @@ export default function SignUp() {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isSubmitting}
             sx={{ mt: 3, mb: 3 }}
           >
             Submit
@@ -124,6 +148,20 @@ export default function SignUp() {
           </Button>
         </Box>
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={() => setOpenSnacknbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnacknbar(false)}
+          severity={success ? "success" : "error"}
+          sx={{ width: "100%" }}
+        >
+          {success ? "Sign up successfully" : "Sign up failed"}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
