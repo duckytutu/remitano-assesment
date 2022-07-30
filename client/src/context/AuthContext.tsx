@@ -6,14 +6,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
-// import { useDispatch } from "react-redux";
-// import { updateUser } from "src/features/user/userSlice";
-// import { getUserInfo } from "../user/services/userService";
-// import { getCredential, signIn, signOut } from "./service/authService";
+import { signIn } from "../api/users";
+import { User } from "../api/users/typings";
 
 export interface AuthState {
-  authenticated: boolean;
-  login: (userName: string, password: string) => Promise<boolean>;
+  user?: User;
+  logIn: (username: string, password: string) => Promise<User | undefined>;
   logOut: () => void;
 }
 
@@ -28,50 +26,29 @@ export interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // getCredential().then(async (credential) => {
-    //   if (credential) {
-    //     const user = await getUserInfo();
-    //     dispatch(updateUser(user || null));
-    //     setAuthenticated(!!user);
-    //     setLoading(false);
-    //   } else {
-    //     setAuthenticated(false);
-    //     setLoading(false);
-    //   }
-    // });
-    setAuthenticated(true);
+    const localUser = localStorage.getItem("c_user");
+    setUser(localUser ? JSON.parse(localUser) : undefined);
     setLoading(false);
   }, []);
 
-  const login = async (username: string, password: string) => {
-    // const isLoggedIn = await signIn(username, password);
-
-    // if (isLoggedIn) {
-    //   const user = await getUserInfo();
-    //   dispatch(updateUser(user || null));
-    //   setAuthenticated(true);
-    // } else {
-    //   setAuthenticated(false);
-    // }
-    // return isLoggedIn;
-
-    setAuthenticated(true);
-    return true;
+  const logIn = async (username: string, password: string) => {
+    const user = await signIn({ username, password });
+    setUser(user);
+    return user;
   };
 
   const logOut = () => {
-    // signOut();
-    setAuthenticated(false);
+    localStorage.removeItem("c_user");
     window.location.reload();
   };
 
   const value: AuthState = {
-    authenticated,
-    login,
+    user,
+    logIn,
     logOut,
   };
 
