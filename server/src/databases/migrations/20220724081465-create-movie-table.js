@@ -17,8 +17,12 @@ module.exports = {
         primaryKey: true,
       },
       userId: { type: Sequelize.INTEGER, allowNull: false, foreignKey: true },
-      videoUrl: { type: Sequelize.STRING, allowNull: false },
-      videoDescription: {
+      movieUrl: { type: Sequelize.STRING, allowNull: false },
+      movieDescription: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      movieTitle: {
         type: Sequelize.STRING,
         allowNull: true,
       },

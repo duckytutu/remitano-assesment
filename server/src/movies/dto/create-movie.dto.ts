@@ -5,8 +5,11 @@ export class CreateMovieDto {
   userId: string;
 
   @ApiProperty({ nullable: false })
-  videoUrl: string;
+  movieUrl: string;
 
   @ApiProperty({ nullable: true })
-  description: string;
+  movieDescription?: string;
+
+  @ApiProperty({ nullable: true })
+  movieTitle?: string;
 }

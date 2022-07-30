@@ -9,10 +9,13 @@ export class Movie extends Model<Movie> {
   userId: string;
 
   @Column({ allowNull: false })
-  videoUrl: string;
+  movieUrl: string;
 
   @Column({ allowNull: true })
-  videoDescription?: string;
+  movieDescription?: string;
+
+  @Column({ allowNull: true })
+  movieTitle?: string;
 
   @Column({ type: 'timestamp' })
   createdAt?: any;

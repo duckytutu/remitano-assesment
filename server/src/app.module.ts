@@ -11,7 +11,7 @@ import { Movie } from './movies/models/movie.model';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'db',
+      host: 'localhost',
       port: 3306,
       username: 'root',
       password: 'root',
