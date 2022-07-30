@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback, useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,6 +9,12 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Alert } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Field, FormField } from "./typings";
 
 function Copyright(props: any) {
   return (
@@ -28,14 +34,48 @@ function Copyright(props: any) {
   );
 }
 
-const Login = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const signInSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().required("Required"),
+});
+
+const SignIn = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const [message, setMessage] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (values: FormField) => {
+    setLoading(true);
+    const user = await auth?.logIn(values[Field.EMAIL], values[Field.PASSWORD]);
+    setLoading(false);
+    if (user) {
+      navigate("/");
+    } else {
+      setMessage("Email or password is not correct");
+    }
+  };
+
+  const formik = useFormik<FormField>({
+    initialValues: {
+      [Field.EMAIL]: "",
+      [Field.PASSWORD]: "",
+    },
+    validationSchema: signInSchema,
+    onSubmit,
+  });
+
+  const getError = useCallback(
+    (field: Field) => {
+      return formik.touched[field] && formik.errors[field];
+    },
+    [formik]
+  );
+
+  const handleSubmit = (event: any) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    formik.handleSubmit();
   };
 
   return (
@@ -50,28 +90,34 @@ const Login = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign In
         </Typography>
+        {message && (
+          <Alert severity="error" sx={{ width: "100%", margin: "20px 0" }}>
+            {message}
+          </Alert>
+        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
+            name={Field.EMAIL}
+            label="Email Address *"
             margin="normal"
-            required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
+            error={!!getError(Field.EMAIL)}
+            helperText={getError(Field.EMAIL)}
+            value={formik.values.email}
+            onChange={formik.handleChange}
           />
           <TextField
+            name={Field.PASSWORD}
+            label="Password *"
             margin="normal"
-            required
             fullWidth
-            name="password"
-            label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
+            error={!!getError(Field.PASSWORD)}
+            helperText={getError(Field.PASSWORD)}
+            value={formik.values.password}
+            onChange={formik.handleChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -82,6 +128,7 @@ const Login = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
             Sign In
           </Button>
@@ -104,4 +151,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
