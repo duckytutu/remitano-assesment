@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -42,5 +45,22 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.delete({ where: { id } });
+  }
+
+  @Post('login')
+  async login(@Request() _req: any, @Body() body: CreateUserDto) {
+    const { username, password } = body;
+    const user = await this.usersService.findOne({
+      where: {
+        username: username,
+        password: password,
+      },
+    });
+    if (!user)
+      throw new HttpException(
+        'Wrong credentials provided',
+        HttpStatus.BAD_REQUEST,
+      );
+    return user;
   }
 }
