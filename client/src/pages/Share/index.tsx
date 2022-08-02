@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -28,22 +28,30 @@ const Wrapper = styled(Box)(() => ({
 
 export default function Share() {
   const { user } = useAuth() as AuthState;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (values: FormField) => {
-    const movieId = parseVideoIdFromYoutubeLink(values[Field.LINK]);
-    if (movieId) {
-      const movie = await getMovieDetail(movieId);
-      if (movie && user) {
-        const { data } = await shareMovie({
-          userId: user.id,
-          movieUrl: `https://www.youtube.com/embed/${movie.movieId}`,
-          movieTitle: movie.title,
-          movieDescription: movie.description.substring(0, 100),
-        });
-        if (data) toast("Shared movie successfully", { type: "success" });
-        else toast("Shared movie failed", { type: "error" });
-      } else toast("Not found movie", { type: "error" });
-    } else toast("The link is invalid", { type: "error" });
+    setIsSubmitting(true);
+    try {
+      const movieId = parseVideoIdFromYoutubeLink(values[Field.LINK]);
+      if (movieId) {
+        const movie = await getMovieDetail(movieId);
+        if (movie && user) {
+          const { data } = await shareMovie({
+            userId: user.id,
+            movieUrl: `https://www.youtube.com/embed/${movie.movieId}`,
+            movieTitle: movie.title,
+            movieDescription: movie.description.substring(0, 100),
+          });
+          if (data) toast("Shared movie successfully", { type: "success" });
+          else toast("Shared movie failed", { type: "error" });
+        } else toast("Not found movie", { type: "error" });
+      } else toast("The link is invalid", { type: "error" });
+    } catch (error) {
+      toast("Error", { type: "error" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formik = useFormik<FormField>({
@@ -90,6 +98,7 @@ export default function Share() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 3 }}
+            disabled={isSubmitting}
           >
             Share
           </Button>
