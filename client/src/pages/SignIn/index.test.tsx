@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import * as authContext from "../../context/AuthContext";
 import SignIn from "./";
 
@@ -38,30 +38,30 @@ describe("signin-page", () => {
     expect(requiredTexts.length).toEqual(2);
   });
 
-  // test("signin page - signed in successfully", async () => {
-  //   jest.spyOn(authContext, "useAuth").mockReturnValue({
-  //     logIn: () => ({ id: 1, username: "test@yopmail.com" }),
-  //   } as any);
+  test("signin page - signed in successfully", async () => {
+    jest.spyOn(authContext, "useAuth").mockReturnValue({
+      logIn: () => ({ id: 1, username: "test@yopmail.com" }),
+    } as any);
 
-  //   render(<SignIn />);
+    render(<SignIn />);
 
-  //   const emailInput = screen.getByLabelText("Email Address *") as any;
-  //   fireEvent.change(emailInput, {
-  //     target: { value: "test@yopmail.com" },
-  //   });
+    const emailInput = screen.getByLabelText("Email Address *") as any;
+    fireEvent.change(emailInput, {
+      target: { value: "test@yopmail.com" },
+    });
 
-  //   const passwordInput = screen.getByLabelText("Password *") as any;
-  //   fireEvent.change(passwordInput, {
-  //     target: { value: "123456" },
-  //   });
+    const passwordInput = screen.getByLabelText("Password *") as any;
+    fireEvent.change(passwordInput, {
+      target: { value: "123456" },
+    });
 
-  //   const signInButton = screen.getByRole("button", {
-  //     name: "Sign In",
-  //   });
-  //   fireEvent.click(signInButton);
+    const signInButton = screen.getByRole("button", {
+      name: "Sign In",
+    });
+    fireEvent.click(signInButton);
 
-  //   expect(mockedUsedNavigate).toHaveBeenCalledWith("/");
-  // });
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith("/"));
+  });
 
   test("signin page - signed in failed", async () => {
     // const navigate = useNavigate();

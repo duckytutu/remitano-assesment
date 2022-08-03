@@ -78,7 +78,6 @@ describe("signup-page", () => {
   });
 
   test("sign up page - sign up failed", async () => {
-    // const navigate = useNavigate();
     jest.spyOn(userApi, "registerUser").mockRejectedValue({});
 
     render(
@@ -109,5 +108,16 @@ describe("signup-page", () => {
     fireEvent.click(submitButton);
 
     expect(await screen.findByText("Register failed")).toBeVisible();
+  });
+
+  test("sign up page - go to login", async () => {
+    render(<SignUp />);
+
+    const loginButton = screen.getByRole("button", {
+      name: "Log In",
+    });
+    fireEvent.click(loginButton);
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith("/login");
   });
 });
