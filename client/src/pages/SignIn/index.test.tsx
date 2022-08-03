@@ -1,5 +1,6 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
+import * as authContext from "../../context/AuthContext";
 import SignIn from "./";
 
 const mockedUsedNavigate = jest.fn();
@@ -35,5 +36,58 @@ describe("signin-page", () => {
     fireEvent.click(signInButton);
     const requiredTexts = await screen.findAllByText("Required");
     expect(requiredTexts.length).toEqual(2);
+  });
+
+  // test("signin page - signed in successfully", async () => {
+  //   jest.spyOn(authContext, "useAuth").mockReturnValue({
+  //     logIn: () => ({ id: 1, username: "test@yopmail.com" }),
+  //   } as any);
+
+  //   render(<SignIn />);
+
+  //   const emailInput = screen.getByLabelText("Email Address *") as any;
+  //   fireEvent.change(emailInput, {
+  //     target: { value: "test@yopmail.com" },
+  //   });
+
+  //   const passwordInput = screen.getByLabelText("Password *") as any;
+  //   fireEvent.change(passwordInput, {
+  //     target: { value: "123456" },
+  //   });
+
+  //   const signInButton = screen.getByRole("button", {
+  //     name: "Sign In",
+  //   });
+  //   fireEvent.click(signInButton);
+
+  //   expect(mockedUsedNavigate).toHaveBeenCalledWith("/");
+  // });
+
+  test("signin page - signed in failed", async () => {
+    // const navigate = useNavigate();
+    jest.spyOn(authContext, "useAuth").mockReturnValue({
+      logIn: () => undefined,
+    } as any);
+
+    render(<SignIn />);
+
+    const emailInput = screen.getByLabelText("Email Address *") as any;
+    fireEvent.change(emailInput, {
+      target: { value: "test@yopmail.com" },
+    });
+
+    const passwordInput = screen.getByLabelText("Password *") as any;
+    fireEvent.change(passwordInput, {
+      target: { value: "123456" },
+    });
+
+    const signInButton = screen.getByRole("button", {
+      name: "Sign In",
+    });
+    fireEvent.click(signInButton);
+
+    expect(
+      await screen.findByText("Email or password is not correct")
+    ).toBeVisible();
   });
 });

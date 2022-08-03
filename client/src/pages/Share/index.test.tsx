@@ -13,6 +13,9 @@ jest.mock("../../context/AuthContext", () => {
   };
 });
 
+jest.mock("../../api/movies");
+const { shareMovie, getMovieDetail } = require("../../api/movies");
+
 test("renders share title", () => {
   render(<Share />);
   const title = screen.getByText(/Share A Movie/i);
@@ -20,6 +23,11 @@ test("renders share title", () => {
 });
 
 test("share url successfully", async () => {
+  shareMovie.mockImplementation(() => ({
+    data: {},
+  }));
+  getMovieDetail.mockImplementation(() => ({}));
+
   render(
     <>
       <ToastContainer autoClose={3000} position="bottom-right" />
@@ -70,6 +78,8 @@ test("share url invalid link", async () => {
 });
 
 test("share url not found movie", async () => {
+  getMovieDetail.mockImplementation(() => undefined);
+
   render(
     <>
       <ToastContainer autoClose={3000} position="bottom-right" />

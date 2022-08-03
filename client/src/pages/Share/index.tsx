@@ -41,7 +41,7 @@ export default function Share() {
             userId: user.id,
             movieUrl: `https://www.youtube.com/embed/${movie.movieId}`,
             movieTitle: movie.title,
-            movieDescription: movie.description.substring(0, 100),
+            movieDescription: movie.description?.substring(0, 100),
           });
           if (data) toast("Shared movie successfully", { type: "success" });
           else toast("Shared movie failed", { type: "error" });
