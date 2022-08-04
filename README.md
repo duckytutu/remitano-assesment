@@ -20,3 +20,10 @@ Then we're good to go:
 
 Frontend App: http://localhost:8000
 Backend App Swagger: http://localhost:3000/swagger
+
+To run test:
+
+```
+docker-compose exec client yarn test
+``
+```
